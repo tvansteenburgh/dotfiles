@@ -8,8 +8,6 @@
 # for ssh logins, install and configure the libpam-umask package.
 #umask 022
 
-TZ='America/Chicago'; export TZ
-
 # if running bash
 if [ -n "$BASH_VERSION" ]; then
     # include .bashrc if it exists
@@ -22,3 +20,33 @@ fi
 if [ -d "$HOME/bin" ] ; then
     PATH="$HOME/bin:$PATH"
 fi
+
+SSHAGENT=/usr/bin/ssh-agent
+SSHAGENTARGS="-s"
+if [ -z "$SSH_AUTH_SOCK" -a -x "$SSHAGENT" ]; then
+  eval `$SSHAGENT $SSHAGENTARGS`
+  trap "kill $SSH_AGENT_PID" 0
+fi
+
+function parse_git_branch {
+    git branch --no-color 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/(\1)/'
+}
+
+function proml {
+    local  BLUE="\[\033[01;34m\]"
+    local GREEN="\[\033[01;32m\]"
+    local WHITE="\[\033[1;37m\]"
+    local  GRAY="\[\033[0;37m\]"
+
+    if [ -n "$VIRTUAL_ENV" ]; then
+        PS1="$GREEN(`basename \"$VIRTUAL_ENV\"`)"
+    else
+        PS1=""
+    fi
+    PS1="$PS1$GRAY\u@\h:\w$BLUE\$(parse_git_branch)$GRAY\$$WHITE "
+    PS2='> '
+    PS4='+ '
+}
+proml
+
+source /usr/local/bin/virtualenvwrapper.sh
