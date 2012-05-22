@@ -28,3 +28,7 @@
     lola = log --graph --decorate --pretty=oneline --abbrev-commit --all
     ls = ls-files
 
+# Reuse recorded resolution of conflicts
+[rerere]
+    enabled = 1
+    autoupdate = 1
