@@ -195,7 +195,7 @@ set foldlevel=99            " don't fold by default
 set pastetoggle=<F2>        " for pasting w/o auto-indenting
 
 " don't outdent hashes
-inoremap # #
+inoremap # X#
 
 " close preview window automatically when we move around
 autocmd CursorMovedI * if pumvisible() == 0|pclose|endif
